@@ -44,6 +44,14 @@ def mcp_headers(**extra: str) -> dict[str, str]:
     return headers
 
 
+def header_value(headers: dict[str, str], name: str) -> str | None:
+    target = name.lower()
+    for key, value in headers.items():
+        if key.lower() == target:
+            return value
+    return None
+
+
 def run_server(runtime_config: RuntimeConfig | None = None) -> tuple[object, threading.Thread, str]:
     server = create_http_server(port=0, runtime_config=runtime_config)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -240,14 +248,30 @@ def test_http_server_handles_get_options_origin_auth_and_payload_limits(monkeypa
     )
     server, thread, base_url = run_server(runtime_config)
     try:
+        status, _, payload = http_request(
+            f"{base_url}/mcp",
+            method="GET",
+            headers={"Accept": "application/json", "Origin": "http://localhost:3000"},
+        )
+        assert status == 406
+        assert payload["ok"] is False
+        assert payload["error"]["code"] == "unsupported_accept_header"
+        assert "message" in payload["error"]
+        assert "disclaimer" in payload
+        assert "traceback" not in json.dumps(payload, ensure_ascii=False).lower()
+
         status, headers, payload = http_request(
             f"{base_url}/mcp",
             method="GET",
             headers={"Accept": "text/event-stream", "Origin": "http://localhost:3000"},
         )
         assert status == 405
-        assert headers["Allow"] == "POST, GET, OPTIONS"
+        assert header_value(headers, "Allow") == "POST, GET, OPTIONS"
+        assert payload["ok"] is False
         assert payload["error"]["code"] == "sse_not_implemented"
+        assert "message" in payload["error"]
+        assert "disclaimer" in payload
+        assert "traceback" not in json.dumps(payload, ensure_ascii=False).lower()
 
         status, headers, payload = http_request(
             f"{base_url}/mcp",
@@ -255,8 +279,8 @@ def test_http_server_handles_get_options_origin_auth_and_payload_limits(monkeypa
             headers={"Origin": "http://localhost:3000"},
         )
         assert status == 204
-        assert headers["Access-Control-Allow-Methods"] == "POST, GET, OPTIONS"
-        assert headers["Access-Control-Allow-Headers"] == "Content-Type, Accept, Authorization, MCP-Protocol-Version"
+        assert header_value(headers, "Access-Control-Allow-Methods") == "POST, GET, OPTIONS"
+        assert header_value(headers, "Access-Control-Allow-Headers") == "Content-Type, Accept, Authorization, MCP-Protocol-Version"
 
         status, _, payload = http_request(
             f"{base_url}/mcp",

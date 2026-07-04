@@ -26,12 +26,20 @@
 - 해결 후보: `2025-06-18` 사용, 또는 초기화 후 협상값과 일치시키기
 - 확인 필요 항목: PlayMCP의 최신 요구 protocol version
 
+## GET /mcp 406
+
+- 증상: `GET /mcp` 가 `406 Not Acceptable` 반환
+- 가능 원인: `Accept: text/event-stream` 없이 `GET /mcp` 호출
+- 확인 명령: `curl -i https://<HOST>/mcp`
+- 해결 후보: SSE 후보 경로 검증이면 `Accept: text/event-stream` 추가, JSON-RPC 호출이면 `POST /mcp` 사용
+- 확인 필요 항목: proxy/gateway 가 `Accept` 를 덮어쓰는지 여부
+
 ## GET /mcp 405
 
 - 증상: `GET /mcp` 가 `405 Method Not Allowed` 반환
-- 가능 원인: 현재 서버는 SSE stream 미구현
+- 가능 원인: `Accept: text/event-stream` 은 맞지만 현재 서버는 SSE stream 미구현
 - 확인 명령: `curl -i https://<HOST>/mcp -H 'Accept: text/event-stream'`
-- 해결 후보: 현재 후보 구현에서는 `405` 를 정상 후보 동작으로 취급
+- 해결 후보: 현재 후보 구현에서는 `405 sse_not_implemented` 를 정상 후보 동작으로 취급
 - 확인 필요 항목: PlayMCP가 GET SSE를 필수로 요구하는지 여부
 
 ## OPTIONS /mcp 실패

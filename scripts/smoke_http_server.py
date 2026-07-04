@@ -17,6 +17,7 @@ from checktime_mcp.mcp_adapter import PROTOCOL_VERSION  # noqa: E402
 from checktime_mcp.mcp_server import create_http_server  # noqa: E402
 
 SAFE_PREVIEW_LIMIT = 240
+SENSITIVE_LEAK_MARKERS = ("token", "secret", "pat", "traceback")
 
 
 def http_request(
@@ -72,6 +73,29 @@ def safe_preview(payload: object) -> str:
     if len(text) > SAFE_PREVIEW_LIMIT:
         text = text[:SAFE_PREVIEW_LIMIT] + "..."
     return text
+
+
+def header_value(headers: dict[str, str], name: str) -> str | None:
+    target = name.lower()
+    for key, value in headers.items():
+        if key.lower() == target:
+            return value
+    return None
+
+
+def is_plain_error_payload(payload: object, *, error_code: str) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    if payload.get("ok") is not False:
+        return False
+    error = payload.get("error")
+    if not isinstance(error, dict):
+        return False
+    message = error.get("message")
+    if error.get("code") != error_code or not isinstance(message, str) or not message.strip():
+        return False
+    rendered = json.dumps(payload, ensure_ascii=False).lower()
+    return not any(marker in rendered for marker in SENSITIVE_LEAK_MARKERS)
 
 
 def assert_pass(condition: bool, label: str, detail: str = "", payload: object | None = None) -> None:
@@ -331,15 +355,28 @@ def main() -> int:
                 payload={"status": status, "body": payload},
             )
 
+        status, _, payload = http_request(
+            url,
+            method="GET",
+            headers={"Accept": "application/json", **({"Origin": success_origin} if success_origin else {})},
+        )
+        assert_pass(
+            status == 406 and is_plain_error_payload(payload, error_code="unsupported_accept_header"),
+            "GET /mcp without SSE Accept rejected",
+            payload={"status": status, "body": payload},
+        )
+
         status, headers, payload = http_request(
             url,
             method="GET",
             headers={"Accept": "text/event-stream", **({"Origin": success_origin} if success_origin else {})},
         )
         assert_pass(
-            status == 405 and headers.get("Allow") == "POST, GET, OPTIONS" and payload["error"]["code"] == "sse_not_implemented",
+            status == 405
+            and is_plain_error_payload(payload, error_code="sse_not_implemented")
+            and header_value(headers, "Allow") == "POST, GET, OPTIONS",
             "GET /mcp SSE unsupported policy",
-            payload={"status": status, "body": payload, "headers": {"Allow": headers.get("Allow")}},
+            payload={"status": status, "body": payload, "headers": {"Allow": header_value(headers, "Allow")}},
         )
 
         status, headers, _ = http_request(
@@ -349,14 +386,14 @@ def main() -> int:
         )
         assert_pass(
             status == 204
-            and headers.get("Access-Control-Allow-Methods") == "POST, GET, OPTIONS"
-            and headers.get("Access-Control-Allow-Headers") == "Content-Type, Accept, Authorization, MCP-Protocol-Version",
+            and header_value(headers, "Access-Control-Allow-Methods") == "POST, GET, OPTIONS"
+            and header_value(headers, "Access-Control-Allow-Headers") == "Content-Type, Accept, Authorization, MCP-Protocol-Version",
             "OPTIONS /mcp",
             payload={
                 "status": status,
                 "headers": {
-                    "Access-Control-Allow-Methods": headers.get("Access-Control-Allow-Methods"),
-                    "Access-Control-Allow-Headers": headers.get("Access-Control-Allow-Headers"),
+                    "Access-Control-Allow-Methods": header_value(headers, "Access-Control-Allow-Methods"),
+                    "Access-Control-Allow-Headers": header_value(headers, "Access-Control-Allow-Headers"),
                 },
             },
         )

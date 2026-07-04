@@ -1,6 +1,6 @@
 # DEPLOYMENT NOTES
 
-이 문서는 로컬 MCP adapter 를 원격 HTTP endpoint 후보로 옮길 때의 준비 메모다. 이번 Phase는 `PlayMCP in KC Git Source Deployment Readiness` 이며, 실제 카카오 클라우드 배포와 실제 PlayMCP 등록은 이번 작업 범위가 아니다.
+이 문서는 로컬 MCP adapter 를 원격 HTTP endpoint 후보로 옮길 때의 준비 메모다. 이번 Phase는 `GET /mcp SSE Policy Smoke Alignment` 이며, 실제 카카오 클라우드 배포와 실제 PlayMCP 등록은 이번 작업 범위가 아니다.
 
 ## Phase 2E 범위
 
@@ -109,8 +109,10 @@ legacy fallback policy:
 
 `GET /mcp`
 
-- `Accept: text/event-stream`
-- 현재는 SSE 미구현으로 `405`
+- SSE 후보 경로
+- `Accept: text/event-stream` 이 없으면 `406 unsupported_accept_header`
+- `Accept: text/event-stream` 이 있으면 현재는 `405 sse_not_implemented`
+- local Docker 와 PlayMCP in KC remote endpoint 에서 동일 정책 확인
 
 `OPTIONS /mcp`
 
@@ -360,7 +362,7 @@ PY
 1. HTTPS endpoint 로 `/health` 확인
 2. remote smoke 로 `/mcp` 확인
 3. `POST /mcp` initialize / ping / tools/list / tools/call 확인
-4. `GET /mcp` 가 SSE 미지원이면 `405` 인지 확인
+4. `GET /mcp` without `Accept: text/event-stream` 는 `406`, with `Accept: text/event-stream` 는 `405` 인지 확인
 5. `OPTIONS /mcp` preflight 확인
 6. bearer / origin 값 확인
 7. reverse proxy timeout / body limit 확인

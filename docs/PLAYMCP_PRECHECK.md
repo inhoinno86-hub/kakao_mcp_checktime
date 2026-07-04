@@ -1,6 +1,6 @@
 # PLAYMCP PRECHECK
 
-이 문서는 PlayMCP 임시 등록 직전의 로컬 preflight 체크리스트다. 이번 Phase는 `PlayMCP in KC Git Source Deployment Readiness` 이며, 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 실제 심사 요청은 이번 작업 범위가 아니다.
+이 문서는 PlayMCP 임시 등록 직전의 로컬 preflight 체크리스트다. 이번 Phase는 `GET /mcp SSE Policy Smoke Alignment` 이며, 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 실제 심사 요청은 이번 작업 범위가 아니다.
 
 ## 현재 상태
 
@@ -8,7 +8,9 @@
 - 로컬 HTTP endpoint smoke 결과: PASS
 - Streamable HTTP 후보 구현 상태: candidate
 - `POST /mcp` 지원 상태: implemented
-- `GET /mcp` SSE 미지원 상태: `405 Method Not Allowed`
+- `GET /mcp` SSE 후보 정책:
+  - without `Accept: text/event-stream` -> `406 unsupported_accept_header`
+  - with `Accept: text/event-stream` -> `405 sse_not_implemented`
 - `OPTIONS /mcp` 상태: implemented
 - `Accept` header 처리 상태: implemented
 - `Content-Type` 처리 상태: implemented
@@ -69,7 +71,8 @@ python3 scripts/smoke_http_server.py
   - unsupported `Accept`: PASS
   - unsupported `MCP-Protocol-Version`: PASS
 - `GET /mcp`
-  - `Accept: text/event-stream` -> `405`
+  - without `Accept: text/event-stream` -> `406 unsupported_accept_header`
+  - with `Accept: text/event-stream` -> `405 sse_not_implemented`
   - `sse_get_stream: not_implemented`
 - `OPTIONS /mcp`
   - preflight candidate 응답 구현
@@ -121,6 +124,7 @@ python3 scripts/smoke_http_server.py --base-url http://127.0.0.1:8080/mcp --bear
 - Codex 실행 환경에서 Docker build/run 가능 여부는 별도 확인 필요
 - token 은 Docker image 에 bake 하지 않는다
 - remote HTTPS 배포 전에 Docker smoke 를 먼저 통과시킨다
+- PlayMCP in KC remote endpoint 에서 local 과 동일한 GET 정책이 확인됐다
 
 ## 카카오 클라우드 배포 전 확인 사항
 
@@ -226,7 +230,7 @@ python3 scripts/smoke_http_server.py \
   --strict
 ```
 
-4. `GET /mcp` 가 SSE 미지원이면 `405` 인지 확인
+4. `GET /mcp` without `Accept: text/event-stream` 는 `406`, with `Accept: text/event-stream` 는 `405` 인지 확인
 5. `OPTIONS /mcp` 가 `204` 인지 확인
 6. JSON-RPC error response 에 stack trace 가 없는지 확인
 7. 민감정보 입력 차단 응답이 유지되는지 확인
@@ -319,7 +323,7 @@ PY
 1. 카카오 클라우드 또는 동등한 HTTPS endpoint 준비
 2. HTTPS 적용 확인
 3. `POST /mcp` smoke 확인
-4. `GET /mcp` 405 또는 SSE 동작 확인
+4. `GET /mcp` 406/405 이원 정책 확인
 5. `OPTIONS /mcp` 확인
 6. health/readiness 확인
 7. auth mode 결정
