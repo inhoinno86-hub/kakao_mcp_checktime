@@ -25,7 +25,17 @@ REQUIRED_DATA_FILES = (
 
 def get_data_dir() -> Path:
     override = os.environ.get("CHECKTIME_MCP_DATA_DIR")
-    return Path(override).resolve() if override else DEFAULT_DATA_DIR
+    if override:
+        return Path(override).resolve()
+
+    candidates = (
+        DEFAULT_DATA_DIR,
+        Path.cwd() / "data",
+    )
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate.resolve()
+    return DEFAULT_DATA_DIR
 
 
 def get_data_path(relative_path: str) -> Path:

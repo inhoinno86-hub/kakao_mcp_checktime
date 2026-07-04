@@ -5,13 +5,17 @@ from typing import Any
 
 from . import __version__
 from .health import SERVICE_NAME
+from .response_policy import error_response
+from .runtime_config import LEGACY_PROTOCOL_VERSION
 from .schemas import ALLOWED_CALENDAR_STYLES, ALLOWED_STAGES, ALLOWED_TRANSACTION_TYPES, ALLOWED_USER_ROLES
 from .tools import TOOL_REGISTRY, handle_tool
 
 
 PROTOCOL_VERSION = "2025-06-18"
+SUPPORTED_PROTOCOL_VERSIONS = {LEGACY_PROTOCOL_VERSION, PROTOCOL_VERSION}
 
 JSONRPC_INVALID_REQUEST = -32600
+JSONRPC_PARSE_ERROR = -32700
 JSONRPC_METHOD_NOT_FOUND = -32601
 JSONRPC_INVALID_PARAMS = -32602
 JSONRPC_INTERNAL_ERROR = -32603
@@ -205,19 +209,32 @@ def handle_jsonrpc_message(message: dict[str, Any]) -> dict[str, Any] | None:
             return jsonrpc_result_response(request_id, call_tool_result(tool_name, arguments))
         return jsonrpc_error_response(request_id, JSONRPC_METHOD_NOT_FOUND, f"지원하지 않는 method 입니다: {method}")
     except Exception as exc:
-        return jsonrpc_error_response(request_id, JSONRPC_INTERNAL_ERROR, f"MCP adapter internal error: {exc}")
+        return jsonrpc_error_response(
+            request_id,
+            JSONRPC_INTERNAL_ERROR,
+            "MCP adapter internal error",
+            data=error_response("mcp_adapter_error", "기존 tool 처리 중 예기치 않은 오류가 발생했습니다."),
+        )
 
 
 def jsonrpc_result_response(request_id: str | int, result: dict[str, Any]) -> dict[str, Any]:
     return {"jsonrpc": "2.0", "id": request_id, "result": result}
 
 
-def jsonrpc_error_response(request_id: str | int | None, code: int, message: str) -> dict[str, Any]:
+def jsonrpc_error_response(
+    request_id: str | int | None,
+    code: int,
+    message: str,
+    data: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    error: dict[str, Any] = {
+        "code": code,
+        "message": message,
+    }
+    if data is not None:
+        error["data"] = data
     return {
         "jsonrpc": "2.0",
         "id": request_id,
-        "error": {
-            "code": code,
-            "message": message,
-        },
+        "error": error,
     }
