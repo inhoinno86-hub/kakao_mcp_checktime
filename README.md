@@ -2,9 +2,9 @@
 
 `부동산 체크타임 MCP`의 로컬 검증 및 MCP adapter 준비 repo다.
 
-현재 상태는 PlayMCP 임시 등록 전 remote deployment candidate / HTTPS smoke preflight 준비 단계다. 실제 PlayMCP 등록, 실제 카카오 클라우드 배포, 심사 요청, 전체 공개 전환, Player 예선 최종 제출은 수행하지 않았다.
+현재 상태는 Phase 2E `PlayMCP in KC Git Source Deployment Readiness` 단계다. 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 심사 요청, 전체 공개 전환, Player 예선 최종 제출은 수행하지 않았다.
 
-PlayMCP 임시 등록 전 Streamable HTTP transport 후보를 보강했고, 로컬 HTTP endpoint smoke test를 통과한 상태다. 다만 PlayMCP 개발자 콘솔의 최신 필수 필드, 인증 방식, timeout/header 규칙은 수동 확인이 필요하다.
+Phase 2D baseline 로컬 검증은 PASS 상태를 유지했고, 이번 Phase에서는 PlayMCP in KC의 Git 소스 빌드 등록에 필요한 입력값과 endpoint 획득 후 remote smoke 절차를 정리했다. 다만 PlayMCP in KC 콘솔의 최신 필수 필드, 인증 방식, timeout/header 규칙은 수동 확인이 필요하다.
 
 ## 프로젝트 목적
 
@@ -305,6 +305,175 @@ Phase 2D 메모:
 - Docker image 는 `CHECKTIME_MCP_DATA_DIR=/app/data` 를 기본 주입하고, app 은 working directory 기준 `data/` fallback 도 사용한다.
 - remote HTTPS 배포 전에 위 Docker smoke를 먼저 통과시켜야 한다.
 
+## PlayMCP in KC Git Source Deployment Readiness
+
+이번 Phase는 PlayMCP 최종 등록이나 심사 요청이 아니라, `https://playmcp.kakaocloud.io` 의 `Git 소스 빌드` 방식으로 배포할 준비 상태를 점검하고 수동 등록 절차를 문서화하는 작업이다.
+
+현재 확인된 적합성:
+
+- 저장소 루트에 `Dockerfile` 이 있다.
+- `Dockerfile` 은 `pyproject.toml`, `README.md`, `src/`, `data/` 를 이미지에 포함한다.
+- 컨테이너 기본 환경변수로 `PORT=8080`, `CHECKTIME_MCP_DATA_DIR=/app/data` 를 주입한다.
+- HTTP 서버는 `PORT` 환경변수를 읽고 기본 endpoint 를 `/mcp` 로 노출한다.
+- `PYTHONPATH=src python3 -m checktime_mcp.mcp_server --health` 결과에서 `playmcp_registration_status: manual_step_required` 와 `ok: true` 를 확인했다.
+- `.dockerignore` 는 `tests`, `docs`, `scripts` 를 제외한다. 운영 runtime 에 필요한 `src/` 와 `data/` 는 제외하지 않는다.
+
+실행 한계:
+
+- 현재 Codex 세션은 `docker.sock` 권한이 없어 Docker build/run 을 재실행하지 못했다.
+- 따라서 Phase 2D의 Docker PASS 이력은 유지 문맥으로 취급하고, 이번 Phase에서는 Dockerfile/런타임 구조와 로컬 baseline PASS를 다시 확인했다.
+
+## PlayMCP in KC 등록 입력값 템플릿
+
+실제 등록은 사용자가 수동으로 수행한다. PAT, token, secret, 실제 endpoint URL 은 문서나 로그에 기록하지 않는다.
+
+```text
+MCP 서버 이름:
+  checktime-mcp
+
+설명:
+  부동산 직거래 당사자를 위한 계약 전/후 체크리스트, 준비서류, 일정, 전문가 검토 포인트 안내용 MCP 서버입니다. 법률 판단, 계약서 작성, 거래 안전성 판단은 수행하지 않습니다.
+
+Git URL:
+  <user-confirmed-git-url>
+  current remote candidate: https://github.com/inhoinno86-hub/kakao_mcp_checktime.git
+
+브랜치 / ref:
+  <user-confirmed-branch-or-main>
+  current local branch: main
+
+Dockerfile 경로:
+  Dockerfile
+
+PAT:
+  public repository라면 비워둠
+  private repository라면 사용자가 직접 입력
+  문서/로그/보고서에는 절대 기록하지 않음
+```
+
+확인 필요:
+
+- 현재 `origin` remote 는 잡혀 있지만, 실제 PlayMCP in KC 에서 사용할 Git URL 과 public/private 상태는 사용자가 최종 확인해야 한다.
+- repository 가 private 이면 PAT 가 필요하다.
+- repository 가 public 이면 PAT 는 비워둘 수 있다.
+
+## PlayMCP in KC 수동 등록 절차
+
+1. 브라우저에서 `https://playmcp.kakaocloud.io` 접속
+2. PlayMCP 에 가입된 카카오 계정으로 로그인
+3. `+ 새 MCP 서버 등록` 클릭
+4. `Git 소스 빌드` 선택
+5. MCP 서버 이름 입력
+6. 설명 입력
+7. Git URL 입력
+8. 브랜치/ref 입력
+9. Dockerfile 경로 입력
+10. private repo 라면 PAT 를 사용자가 직접 입력
+11. public repo 라면 PAT 는 비움
+12. `등록하기` 클릭
+13. Status 가 `Starting` 에서 `Active` 로 바뀔 때까지 대기
+14. 상세 정보에서 Endpoint URL 복사
+15. Endpoint URL 기준으로 remote smoke 수행
+
+주의:
+
+- MCP 서버는 최대 2개까지 등록 가능하므로 중복 생성에 주의한다.
+- 삭제 후 복구 불가다.
+- PAT, token, secret 은 문서와 로그에 남기지 않는다.
+- Endpoint URL 은 공개 가능 여부를 판단한 뒤에만 공유한다.
+- Endpoint URL 획득 후 PlayMCP 최종 등록 전에 smoke test 를 먼저 수행한다.
+
+## Endpoint URL 획득 후 remote smoke
+
+auth off candidate:
+
+```bash
+python3 scripts/smoke_http_server.py \
+  --base-url '<endpoint-url>/mcp' \
+  --strict
+```
+
+Endpoint URL 이 이미 `/mcp` 를 포함하는 경우:
+
+- `https://example.playmcp...` 이면 base-url 은 `https://example.playmcp.../mcp`
+- `https://example.playmcp.../mcp` 이면 base-url 은 그대로 사용
+
+bearer candidate:
+
+```bash
+python3 scripts/smoke_http_server.py \
+  --base-url '<endpoint-url-or-endpoint-url-with-mcp>' \
+  --bearer-token '<deployment-token>' \
+  --strict
+```
+
+명령 히스토리 노출을 줄이려면 env 사용:
+
+```bash
+export CHECKTIME_REMOTE_BASE_URL='<endpoint-url-or-endpoint-url-with-mcp>'
+export CHECKTIME_REMOTE_BEARER_TOKEN='<deployment-token>'
+
+python3 scripts/smoke_http_server.py \
+  --base-url "$CHECKTIME_REMOTE_BASE_URL" \
+  --bearer-token "$CHECKTIME_REMOTE_BEARER_TOKEN" \
+  --strict
+```
+
+negative smoke 는 bearer mode endpoint 에서만 수행:
+
+```bash
+python3 scripts/smoke_http_server.py \
+  --base-url "$CHECKTIME_REMOTE_BASE_URL" \
+  --strict
+```
+
+```bash
+python3 - <<'PY'
+import json
+import os
+import urllib.request
+import urllib.error
+
+url = os.environ["CHECKTIME_REMOTE_BASE_URL"]
+
+payload = json.dumps({
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {}
+}).encode("utf-8")
+
+req = urllib.request.Request(
+    url,
+    data=payload,
+    method="POST",
+    headers={
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "MCP-Protocol-Version": "2025-06-18",
+        "Authorization": "Bearer invalid-token"
+    },
+)
+
+try:
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        print("status", resp.status)
+        print(resp.read().decode("utf-8", errors="replace"))
+except urllib.error.HTTPError as exc:
+    print("HTTPError", exc.code)
+    print(exc.read().decode("utf-8", errors="replace"))
+except Exception as exc:
+    print(type(exc).__name__, exc)
+PY
+```
+
+기대 결과:
+
+- connection reset 이 아니라 `401` 또는 안전한 HTTP error
+- response 에 token 원문 노출 없음
+- log 에 token 원문 노출 없음
+- stack trace 노출 없음
+
 ## PlayMCP 등록 전 남은 수동 단계
 
 - 카카오 클라우드 MCP 서버 생성
@@ -331,9 +500,11 @@ Phase 2D 메모:
 ## known limitations
 
 - 현재 서버는 PlayMCP 임시 등록 전 로컬/HTTP preflight 후보 상태다.
-- 실제 PlayMCP 등록, 실제 카카오 클라우드 배포, 심사 요청은 수행하지 않았다.
+- 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 심사 요청은 수행하지 않았다.
 - GET 기반 SSE stream은 구현하지 않았다.
 - PlayMCP 개발자 콘솔의 최신 필수 필드, transport 선택값, 인증 방식, timeout/header 규칙, 실제 Origin 값은 수동 확인이 필요하다.
+- Endpoint URL 획득 전에는 remote smoke 를 수행할 수 없다.
+- `Authorization`, `MCP-Protocol-Version`, `Content-Type`, `Accept`, timeout, payload size, `/mcp` path 처리 방식은 PlayMCP in KC 에서 `official_check_needed` 상태다.
 - `generate_contract_day_checklist` 는 이번 Phase에서 구현하지 않았다.
 
 관련 문서:

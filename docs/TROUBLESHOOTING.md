@@ -107,10 +107,10 @@
 ## PlayMCP에서 endpoint 접근 실패
 
 - 증상: 콘솔 테스트 또는 임시 등록 단계에서 endpoint 연결 실패
-- 가능 원인: HTTPS 미적용, 외부 공개 안 됨, DNS/방화벽 문제, 헤더 mismatch
+- 가능 원인: HTTPS 미적용, 외부 공개 안 됨, DNS/방화벽 문제, 헤더 mismatch, Git source build 실패, Endpoint URL 뒤 `/mcp` path 오기입
 - 확인 명령: `curl -i https://<HOST>/health` 와 `curl -i https://<HOST>/mcp -H 'Accept: text/event-stream'`
 - 해결 후보: 공개 DNS, TLS, ingress, header 정책, auth 정책 재확인
-- 확인 필요 항목: PlayMCP 콘솔의 최신 접근 테스트 방식과 실패 로그 위치
+- 확인 필요 항목: PlayMCP 콘솔의 최신 접근 테스트 방식, Git source build 로그 위치, 실패 로그 위치
 
 ## HTTPS 인증서 문제
 
@@ -136,6 +136,31 @@
 - 해결 후보: runtime secret 재주입, `Bearer ` prefix 포함 여부 확인
 - 확인 필요 항목: PlayMCP bearer token 입력 필드 존재 여부
 
+## PlayMCP Git source build 실패
+
+- 증상: Status 가 `Starting` 에서 오래 머물거나 `Active` 로 전환되지 않음
+- 가능 원인: Git URL 오기입, branch/ref 오기입, private repo PAT 누락, Dockerfile 경로 오기입, Docker build 실패
+- 확인 명령: PlayMCP in KC 상세 화면의 build/deploy 로그 확인
+- 해결 후보:
+  - Git URL 이 실제 push 된 저장소인지 재확인
+  - `main` 또는 사용한 ref 가 존재하는지 재확인
+  - private repo 라면 PAT 를 사용자가 직접 다시 입력
+  - Dockerfile 경로를 `Dockerfile` 로 재확인
+- 확인 필요 항목: PlayMCP in KC 가 build log 를 어느 화면에 노출하는지 여부
+
+## Endpoint URL path 오기입
+
+- 증상: health 는 열리지만 MCP smoke 만 실패
+- 가능 원인: Endpoint URL 이 이미 `/mcp` 를 포함하는데 다시 `/mcp` 를 덧붙임, 또는 반대로 `/mcp` 를 누락
+- 확인 명령:
+  - `curl -i <ENDPOINT-URL>`
+  - `curl -i <ENDPOINT-URL>/mcp`
+  - `python3 scripts/smoke_http_server.py --base-url '<candidate-url>' --strict`
+- 해결 후보:
+  - Endpoint URL 이 host-only 면 `/mcp` 를 추가
+  - Endpoint URL 이 이미 `/mcp` 로 끝나면 그대로 사용
+- 확인 필요 항목: PlayMCP in KC 상세 화면이 host URL 을 주는지, MCP path 포함 URL 을 주는지 여부
+
 ## Docker container port mismatch
 
 - 증상: 컨테이너는 실행되지만 `curl` 또는 smoke가 연결 실패
@@ -159,3 +184,16 @@
 - 확인 명령: `PYTHONPATH=src python3 -m checktime_mcp.mcp_server --health`
 - 해결 후보: data 파일 포함 여부, `CHECKTIME_MCP_DATA_DIR` 경로, 배포 artifact 확인
 - 확인 필요 항목: PlayMCP가 별도 health endpoint 를 요구하는지 여부
+
+## Missing / invalid token negative test 결과가 이상함
+
+- 증상: missing token 또는 invalid token 테스트에서 `401`/`403` 대신 connection reset, 5xx, stack trace 노출 발생
+- 가능 원인: reverse proxy auth 설정 충돌, upstream 예외 노출, PlayMCP gateway 재작성, bearer mode 미적용
+- 확인 명령:
+  - `python3 scripts/smoke_http_server.py --base-url "$CHECKTIME_REMOTE_BASE_URL" --strict`
+  - invalid token 수동 POST 테스트
+- 해결 후보:
+  - app auth mode 와 proxy auth 정책 정렬
+  - 안전한 HTTP error 반환 유지
+  - token/PAT/stack trace 가 log 와 response 에 노출되지 않는지 확인
+- 확인 필요 항목: PlayMCP in KC 가 upstream auth failure 를 어떻게 중계하는지 여부
