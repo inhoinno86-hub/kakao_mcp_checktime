@@ -1,6 +1,8 @@
 # PLAYMCP PRECHECK
 
-이 문서는 PlayMCP 임시 등록 직전의 로컬 preflight 체크리스트다. 이번 Phase는 `GET /mcp SSE Policy Smoke Alignment` 이며, 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 실제 심사 요청은 이번 작업 범위가 아니다.
+이 문서는 PlayMCP 임시 등록 직전의 로컬 preflight 체크리스트다. 이번 Phase는 `KAKAO_MCP Phase 2G - PlayMCP Registration Field Verification Wrap-up` 이며, 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 실제 심사 요청은 이번 작업 범위가 아니다.
+
+등록 후보 필드와 수동 확인 항목 정리는 [docs/PLAYMCP_REGISTRATION_FIELDS.md](/home/inno/repo/kakao_mcp_checktime/docs/PLAYMCP_REGISTRATION_FIELDS.md) 를 기준으로 유지한다.
 
 ## 현재 상태
 
