@@ -1,0 +1,46 @@
+[
+  {
+    "item_id": "ljt_pre_001",
+    "stage": "pre_contract",
+    "title": "임대인 표시와 공식 서류의 일치 여부를 다시 확인하세요.",
+    "priority": "high",
+    "needs_expert_review": true,
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "ljt_pre_002",
+    "stage": "pre_contract",
+    "title": "보증금 관련 확인 자료와 입주 일정을 함께 정리하세요.",
+    "priority": "high",
+    "needs_expert_review": false,
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "ljt_pre_003",
+    "stage": "pre_contract",
+    "title": "대리계약, 공동소유, 권리관계가 복잡하면 전문가 검토 후보로 분리하세요.",
+    "priority": "high",
+    "needs_expert_review": true,
+    "source_status": "confirmation_required",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "ljt_pre_004",
+    "stage": "pre_contract",
+    "title": "입주 후 처리할 일정 후보를 계약 전에 미리 캘린더에 적어두세요.",
+    "priority": "medium",
+    "needs_expert_review": false,
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "user_role": "buyer",
+    "label": "매수인",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "user_role": "tenant",
+    "label": "임차인",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

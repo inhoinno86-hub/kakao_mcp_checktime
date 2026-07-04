@@ -1,0 +1,9 @@
+{
+  "general_information_only": {
+    "text": "부동산 체크타임 MCP는 부동산 계약 전후에 사용자가 챙겨야 할 체크리스트와 일정 후보를 정리하는 생활형 도구입니다. 이 서비스는 공인중개, 법률자문, 세무자문, 등기업무 대행, 계약서 작성 또는 안전성 판단을 제공하지 않습니다. 구체적인 권리관계, 계약 조건, 세금, 등기, 분쟁 가능성은 공인중개사, 법무사, 변호사, 세무사 등 전문가와 공식 기관을 통해 확인해야 합니다.",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": "2026-07-04",
+    "disclaimer_key": "general_information_only"
+  }
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "item_id": "lmt_pre_001",
+    "stage": "pre_contract",
+    "title": "월세와 관리비 범위를 계약 전에 다시 확인하세요.",
+    "priority": "high",
+    "needs_expert_review": false,
+    "source_status": "confirmation_required",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "lmt_pre_002",
+    "stage": "pre_contract",
+    "title": "입주일과 실제 열쇠 인도 일정 후보를 따로 정리하세요.",
+    "priority": "medium",
+    "needs_expert_review": false,
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "lmt_pre_003",
+    "stage": "pre_contract",
+    "title": "권리관계나 대리계약 여부가 애매하면 전문가 검토 후보로 남겨두세요.",
+    "priority": "high",
+    "needs_expert_review": true,
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

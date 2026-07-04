@@ -1,0 +1,19 @@
+{
+  "scenario_id": "scenario_today_tasks",
+  "input": {
+    "transaction_type": "lease_jeonse",
+    "user_role": "tenant",
+    "contract_date": "2026-07-12",
+    "move_in_date": "2026-08-10",
+    "current_date": "2026-08-08"
+  },
+  "expected_tool": "get_today_tasks",
+  "expected_response_shape": {
+    "data_keys": ["today_tasks", "upcoming_deadlines", "case"]
+  },
+  "risk_assertions": {
+    "must_include_disclaimer": true,
+    "must_not_include_banned_terms": true,
+    "must_not_request_sensitive_input": true
+  }
+}

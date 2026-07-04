@@ -1,0 +1,19 @@
+{
+  "scenario_id": "scenario_calendar_items",
+  "input": {
+    "transaction_type": "lease_jeonse",
+    "user_role": "tenant",
+    "contract_date": "2026-07-12",
+    "move_in_date": "2026-08-10",
+    "calendar_style": "talk_calendar_short"
+  },
+  "expected_tool": "generate_calendar_items",
+  "expected_response_shape": {
+    "data_keys": ["calendar_items", "case"]
+  },
+  "risk_assertions": {
+    "must_include_disclaimer": true,
+    "must_not_include_banned_terms": true,
+    "must_not_request_sensitive_input": true
+  }
+}

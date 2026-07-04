@@ -1,0 +1,22 @@
+[
+  {
+    "name": "매매계약서 확인본",
+    "required_level": "recommended",
+    "stage": "after_contract",
+    "note": "실제 요구 범위는 기관과 상황에 따라 달라질 수 있습니다.",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "name": "신분 확인용 기본 서류 준비 여부 메모",
+    "required_level": "recommended",
+    "stage": "contract_day",
+    "note": "실제 지참 범위는 거래 상황에 따라 다시 확인하세요.",
+    "source_status": "confirmation_required",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

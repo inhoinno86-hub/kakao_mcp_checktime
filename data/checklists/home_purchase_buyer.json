@@ -1,0 +1,46 @@
+[
+  {
+    "item_id": "hpb_pre_001",
+    "stage": "pre_contract",
+    "title": "등기와 실제 거래 당사자 표시가 일치하는지 다시 확인하세요.",
+    "priority": "high",
+    "needs_expert_review": true,
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "hpb_pre_002",
+    "stage": "pre_contract",
+    "title": "잔금일 전 필요한 서류와 자금 준비 범위를 정리하세요.",
+    "priority": "high",
+    "needs_expert_review": false,
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "hpb_pre_003",
+    "stage": "pre_contract",
+    "title": "공식 서류 기준으로 권리관계와 추가 확인 항목을 정리하세요.",
+    "priority": "high",
+    "needs_expert_review": true,
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "item_id": "hpb_pre_004",
+    "stage": "pre_contract",
+    "title": "입주 일정과 잔금 이후 처리 순서를 미리 적어두세요.",
+    "priority": "medium",
+    "needs_expert_review": false,
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

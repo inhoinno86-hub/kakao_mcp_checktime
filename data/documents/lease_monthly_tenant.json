@@ -1,0 +1,32 @@
+[
+  {
+    "name": "임대차계약서 확인본",
+    "required_level": "recommended",
+    "stage": "before_move_in",
+    "note": "실제 요구 범위는 상황별로 달라질 수 있습니다.",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "name": "보증금 및 월세 납부 일정 메모",
+    "required_level": "recommended",
+    "stage": "before_move_in",
+    "note": "계약 조건별 차이가 있을 수 있어 다시 확인이 필요합니다.",
+    "source_status": "confirmation_required",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "name": "입주 전 체크리스트 메모",
+    "required_level": "recommended",
+    "stage": "before_move_in",
+    "note": "생활형 정리용 후보 문서입니다.",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

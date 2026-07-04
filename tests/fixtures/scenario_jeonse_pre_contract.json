@@ -1,0 +1,19 @@
+{
+  "scenario_id": "scenario_jeonse_pre_contract",
+  "input": {
+    "transaction_type": "lease_jeonse",
+    "user_role": "tenant",
+    "contract_date": "2026-07-12",
+    "move_in_date": "2026-08-10",
+    "region": "seoul_songpa"
+  },
+  "expected_tool": "generate_pre_contract_checklist",
+  "expected_response_shape": {
+    "data_keys": ["items", "case"]
+  },
+  "risk_assertions": {
+    "must_include_disclaimer": true,
+    "must_not_include_banned_terms": true,
+    "must_not_request_sensitive_input": true
+  }
+}

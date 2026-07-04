@@ -1,0 +1,80 @@
+[
+  {
+    "point_id": "buyer_general_review",
+    "transaction_type": "home_purchase",
+    "user_role": "buyer",
+    "title": "권리관계와 추가 확인 서류 범위는 전문가 검토가 필요할 수 있습니다.",
+    "reason": "거래 구조와 서류 상태에 따라 확인 범위가 달라질 수 있습니다.",
+    "always_include": true,
+    "context_tags": [],
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "point_id": "tenant_general_review",
+    "transaction_type": "lease_jeonse",
+    "user_role": "tenant",
+    "title": "권리관계와 계약 구조가 복잡하면 전문가 검토 후보로 남겨두세요.",
+    "reason": "전세 계약은 조건별 확인 범위 차이가 있을 수 있습니다.",
+    "always_include": true,
+    "context_tags": [],
+    "source_status": "confirmation_required",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "point_id": "monthly_general_review",
+    "transaction_type": "lease_monthly",
+    "user_role": "tenant",
+    "title": "월세 조건과 부속비용 해석이 애매하면 전문가 확인이 필요할 수 있습니다.",
+    "reason": "상황별 차이가 큰 항목입니다.",
+    "always_include": true,
+    "context_tags": [],
+    "source_status": "confirmation_required",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "point_id": "proxy_contract_possible",
+    "transaction_type": "home_purchase",
+    "user_role": "buyer",
+    "title": "대리계약 가능 여부와 확인 서류 범위는 전문가 검토가 필요할 수 있습니다.",
+    "reason": "대리권 확인 범위가 달라질 수 있습니다.",
+    "always_include": false,
+    "context_tags": ["proxy_contract_possible"],
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "point_id": "complex_rights_unclear",
+    "transaction_type": "home_purchase",
+    "user_role": "buyer",
+    "title": "권리관계가 복잡하거나 불명확하면 전문가 검토가 필요할 수 있습니다.",
+    "reason": "공식 서류와 실제 조건의 해석 차이가 생길 수 있습니다.",
+    "always_include": false,
+    "context_tags": ["complex_rights_unclear", "registration_unclear"],
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "point_id": "co_owner",
+    "transaction_type": "lease_jeonse",
+    "user_role": "tenant",
+    "title": "공동소유나 대리 진행 여부는 전문가 검토 후보로 두세요.",
+    "reason": "확인 서류 범위가 달라질 수 있습니다.",
+    "always_include": false,
+    "context_tags": ["co_owner", "proxy_contract_possible"],
+    "source_status": "official_check_needed",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]

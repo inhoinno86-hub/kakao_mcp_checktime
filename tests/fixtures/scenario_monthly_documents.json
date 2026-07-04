@@ -1,0 +1,18 @@
+{
+  "scenario_id": "scenario_monthly_documents",
+  "input": {
+    "transaction_type": "lease_monthly",
+    "user_role": "tenant",
+    "stage": "before_move_in",
+    "move_in_date": "2026-07-11"
+  },
+  "expected_tool": "generate_required_documents",
+  "expected_response_shape": {
+    "data_keys": ["documents", "case"]
+  },
+  "risk_assertions": {
+    "must_include_disclaimer": true,
+    "must_not_include_banned_terms": true,
+    "must_not_request_sensitive_input": true
+  }
+}

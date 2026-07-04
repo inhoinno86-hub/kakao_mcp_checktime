@@ -1,0 +1,26 @@
+[
+  {
+    "transaction_type": "home_purchase",
+    "label": "주택 매매",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "transaction_type": "lease_jeonse",
+    "label": "전세",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  },
+  {
+    "transaction_type": "lease_monthly",
+    "label": "월세",
+    "source_status": "service_curated",
+    "source_name": null,
+    "last_reviewed_at": null,
+    "disclaimer_key": "general_information_only"
+  }
+]
