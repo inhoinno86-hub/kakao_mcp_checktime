@@ -4,6 +4,8 @@
 
 등록 후보 필드와 수동 확인 항목 정리는 [docs/PLAYMCP_REGISTRATION_FIELDS.md](/home/inno/repo/kakao_mcp_checktime/docs/PLAYMCP_REGISTRATION_FIELDS.md) 를 기준으로 유지한다.
 
+대표 이미지, MCP 식별자 후보, 대화 예시 3개, auth 권장안은 [docs/PLAYMCP_CONSOLE_ASSETS.md](/home/inno/repo/kakao_mcp_checktime/docs/PLAYMCP_CONSOLE_ASSETS.md) 에 정리한다.
+
 ## 현재 상태
 
 - 로컬 MCP adapter smoke 결과: PASS

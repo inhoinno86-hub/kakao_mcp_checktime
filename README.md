@@ -2,9 +2,15 @@
 
 `부동산 체크타임 MCP`의 로컬 검증 및 MCP adapter 준비 repo다.
 
-현재 상태는 Phase 2G `PlayMCP Registration Field Verification Wrap-up` 단계다. 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 심사 요청, 전체 공개 전환, Player 예선 최종 제출은 수행하지 않았다.
+현재 상태는 Phase 2H `PlayMCP Console Asset & Metadata Preparation` 단계다. 실제 PlayMCP 등록, 실제 PlayMCP in KC 서버 생성, 실제 카카오 클라우드 배포, 심사 요청, 전체 공개 전환, Player 예선 최종 제출은 수행하지 않았다.
 
-Phase 2D baseline 로컬 검증은 PASS 상태를 유지했고, PlayMCP in KC remote endpoint에서도 local 과 동일한 `GET /mcp` 정책이 확인됐다. 이번 Phase에서는 서버 정책을 바꾸지 않고 registration field 후보, tool inventory, 수동 콘솔 확인 항목, remote/local smoke 결과를 문서화했다.
+Phase 2D baseline 로컬 검증은 PASS 상태를 유지했고, PlayMCP in KC remote endpoint에서도 local 과 동일한 `GET /mcp` 정책이 확인됐다. 이번 Phase에서는 서버 정책을 바꾸지 않고 representative image, MCP identifier 후보, conversation examples, auth 권장안과 기존 registration field 문서를 함께 정리했다.
+
+관련 문서:
+
+- [docs/PLAYMCP_CONSOLE_ASSETS.md](/home/inno/repo/kakao_mcp_checktime/docs/PLAYMCP_CONSOLE_ASSETS.md)
+- [docs/PLAYMCP_REGISTRATION_FIELDS.md](/home/inno/repo/kakao_mcp_checktime/docs/PLAYMCP_REGISTRATION_FIELDS.md)
+- [docs/PLAYMCP_PRECHECK.md](/home/inno/repo/kakao_mcp_checktime/docs/PLAYMCP_PRECHECK.md)
 
 ## 프로젝트 목적
 
