@@ -35,6 +35,8 @@ def test_tools_list_exposes_all_required_tools() -> None:
     for tool in tools:
         assert "description" in tool
         assert "inputSchema" in tool
+        assert "집계약 체크타임" in tool["description"]
+        assert tool["annotations"]["openWorldHint"] is False
 
 
 def test_tools_call_wraps_existing_tool_response() -> None:

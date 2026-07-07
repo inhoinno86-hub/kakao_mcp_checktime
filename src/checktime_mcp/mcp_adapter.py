@@ -81,37 +81,37 @@ def build_tool_definitions() -> list[dict[str, Any]]:
         {
             "name": "generate_pre_contract_checklist",
             "title": "계약 전 체크리스트 생성",
-            "description": "거래 유형과 역할 기준으로 계약 전 확인 항목 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 거래 유형과 역할 기준으로 계약 전 확인 항목 후보를 반환합니다.",
             "required": ["transaction_type", "user_role"],
         },
         {
             "name": "generate_post_contract_timeline",
             "title": "계약 후 일정 후보 생성",
-            "description": "기준 날짜를 바탕으로 계약 후 일정 후보를 계산합니다.",
+            "description": "집계약 체크타임에서 기준 날짜를 바탕으로 계약 후 일정 후보를 계산합니다.",
             "required": ["transaction_type", "user_role"],
         },
         {
             "name": "generate_required_documents",
             "title": "단계별 준비서류 생성",
-            "description": "거래 유형, 역할, 단계 기준으로 준비서류 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 거래 유형, 역할, 단계 기준으로 준비서류 후보를 반환합니다.",
             "required": ["transaction_type", "user_role", "stage"],
         },
         {
             "name": "generate_calendar_items",
             "title": "캘린더 항목 생성",
-            "description": "타임라인을 캘린더 입력용 항목으로 변환합니다.",
+            "description": "집계약 체크타임에서 타임라인을 캘린더 입력용 항목으로 변환합니다.",
             "required": ["transaction_type", "user_role"],
         },
         {
             "name": "flag_expert_review_points",
             "title": "전문가 검토 포인트 추출",
-            "description": "context 태그를 기준으로 전문가 재확인 포인트를 반환합니다.",
+            "description": "집계약 체크타임에서 context 태그를 기준으로 전문가 재확인 포인트를 반환합니다.",
             "required": ["transaction_type", "user_role", "context"],
         },
         {
             "name": "get_today_tasks",
             "title": "오늘 해야 할 일 후보 생성",
-            "description": "기준일과 일정 후보를 조합해 오늘 해야 할 일과 임박 일정 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 기준일과 일정 후보를 조합해 오늘 해야 할 일과 임박 일정 후보를 반환합니다.",
             "required": ["transaction_type", "user_role"],
         },
     ]
@@ -132,6 +132,7 @@ def build_tool_definitions() -> list[dict[str, Any]]:
                 "readOnlyHint": True,
                 "destructiveHint": False,
                 "idempotentHint": True,
+                "openWorldHint": False,
             },
         }
         for item in definitions
