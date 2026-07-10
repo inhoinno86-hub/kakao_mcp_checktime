@@ -141,6 +141,34 @@ def test_http_server_supports_initialize_ping_tools_list_and_call() -> None:
         stop_server(server, thread)
 
 
+def test_http_server_returns_documents_not_ready_for_empty_document_stage() -> None:
+    server, thread, base_url = run_server()
+    try:
+        status, _, payload = http_request(
+            f"{base_url}/mcp",
+            method="POST",
+            headers=mcp_headers(),
+            payload={
+                "jsonrpc": "2.0",
+                "id": 10,
+                "method": "tools/call",
+                "params": {
+                    "name": "generate_required_documents",
+                    "arguments": {
+                        "transaction_type": "lease_jeonse",
+                        "user_role": "tenant",
+                        "stage": "after_contract",
+                    },
+                },
+            },
+        )
+        assert status == 200
+        assert payload["result"]["isError"] is True
+        assert payload["result"]["structuredContent"]["error"]["code"] == "documents_not_ready"
+    finally:
+        stop_server(server, thread)
+
+
 def test_http_server_rejects_invalid_json_and_unknown_method() -> None:
     server, thread, base_url = run_server()
     try:

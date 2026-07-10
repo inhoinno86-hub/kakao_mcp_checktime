@@ -81,6 +81,8 @@ python3 scripts/smoke_http_server.py
 }
 ```
 
+- 지원 `stage` 값이어도 해당 `transaction_type` / `user_role` 조합에 매칭 문서가 없으면 `documents_not_ready` 오류를 반환한다.
+
 ### `generate_calendar_items`
 
 ```json

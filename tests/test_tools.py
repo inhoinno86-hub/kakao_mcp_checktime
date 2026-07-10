@@ -56,6 +56,32 @@ def test_missing_required_field_returns_error() -> None:
     assert response["error"]["code"] == "missing_required_field"
 
 
+def test_generate_required_documents_returns_error_when_stage_has_no_documents() -> None:
+    response = handle_tool(
+        "generate_required_documents",
+        {
+            "transaction_type": "lease_monthly",
+            "user_role": "tenant",
+            "stage": "after_contract",
+        },
+    )
+    assert response["ok"] is False
+    assert response["error"]["code"] == "documents_not_ready"
+
+
+def test_generate_required_documents_returns_documents_for_supported_stage() -> None:
+    response = handle_tool(
+        "generate_required_documents",
+        {
+            "transaction_type": "lease_monthly",
+            "user_role": "tenant",
+            "stage": "before_move_in",
+        },
+    )
+    assert_common_success_shape(response)
+    assert response["data"]["documents"]
+
+
 def test_invalid_transaction_type_returns_error() -> None:
     response = handle_tool(
         "generate_pre_contract_checklist",

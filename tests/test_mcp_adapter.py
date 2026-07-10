@@ -93,3 +93,20 @@ def test_tools_call_propagates_invalid_date_error() -> None:
     structured = response["result"]["structuredContent"]
     assert response["result"]["isError"] is True
     assert structured["error"]["code"] == "invalid_date_format"
+
+
+def test_tools_call_propagates_documents_not_ready_error() -> None:
+    response = call(
+        "tools/call",
+        {
+            "name": "generate_required_documents",
+            "arguments": {
+                "transaction_type": "home_purchase",
+                "user_role": "buyer",
+                "stage": "before_move_in",
+            },
+        },
+    )
+    structured = response["result"]["structuredContent"]
+    assert response["result"]["isError"] is True
+    assert structured["error"]["code"] == "documents_not_ready"

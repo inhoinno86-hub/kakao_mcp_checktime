@@ -66,6 +66,10 @@ printf '%s\n' '{"transaction_type":"lease_jeonse","user_role":"tenant","contract
 PYTHONPATH=src python3 -m checktime_mcp.server generate_required_documents --input tests/fixtures/scenario_monthly_documents.json
 ```
 
+주의:
+
+- `generate_required_documents` 는 지원 단계라도 해당 거래 유형/역할 조합에 문서 seed가 없으면 성공 빈 배열 대신 `documents_not_ready` 오류를 반환한다.
+
 ## MCP adapter / HTTP server 실행 방법
 
 stdio:

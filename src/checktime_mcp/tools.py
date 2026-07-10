@@ -79,6 +79,8 @@ def generate_required_documents(payload: dict[str, Any]) -> dict[str, Any]:
         for item in load_documents(case["transaction_type"], case["user_role"])
         if item["stage"] == payload["stage"]
     ]
+    if not documents:
+        raise ToolError("documents_not_ready")
     expert_points = collect_expert_points(case, always_only=True)
     return success_response(
         data={"documents": documents, "case": minimal_case(case)},
