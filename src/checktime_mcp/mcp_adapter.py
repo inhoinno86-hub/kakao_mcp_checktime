@@ -93,23 +93,23 @@ def build_tool_definitions() -> list[dict[str, Any]]:
         {
             "name": "generate_pre_contract_checklist",
             "title": "계약 전 체크리스트 생성",
-            "description": "집계약 체크타임에서 거래 유형과 역할 기준으로 계약 전 확인 항목 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 지원되는 거래 유형과 역할에 맞는 계약 전 확인 항목을 반환합니다.",
             "required": ["transaction_type", "user_role"],
-            "property_names": property_groups["case_core"] + ["contract_date", "move_in_date", "region"],
+            "property_names": property_groups["case_core"],
         },
         {
             "name": "generate_post_contract_timeline",
             "title": "계약 후 일정 후보 생성",
-            "description": "집계약 체크타임에서 기준 날짜를 바탕으로 계약 후 일정 후보를 계산합니다.",
+            "description": "집계약 체크타임에서 입력한 기준 날짜를 바탕으로 계약 후 일정 후보를 반환합니다.",
             "required": ["transaction_type", "user_role"],
             "property_names": property_groups["case_core"] + property_groups["timeline_dates"],
         },
         {
             "name": "generate_required_documents",
             "title": "단계별 준비서류 생성",
-            "description": "집계약 체크타임에서 거래 유형, 역할, 단계 기준으로 준비서류 후보를 반환합니다. 현재 지원 단계는 home_purchase/buyer 의 contract_day, after_contract 와 lease_jeonse·lease_monthly/tenant 의 before_move_in 입니다.",
+            "description": "집계약 체크타임에서 일부 지원 조합에 한해 준비서류 후보를 반환합니다. 현재 지원 범위는 home_purchase/buyer 의 contract_day, after_contract 와 lease_jeonse·lease_monthly/tenant 의 before_move_in 입니다.",
             "required": ["transaction_type", "user_role", "stage"],
-            "property_names": property_groups["case_core"] + ["stage"] + property_groups["timeline_dates"],
+            "property_names": property_groups["case_core"] + ["stage"],
             "properties_override": {
                 "stage": {
                     "type": "string",
@@ -121,14 +121,14 @@ def build_tool_definitions() -> list[dict[str, Any]]:
         {
             "name": "generate_calendar_items",
             "title": "캘린더 항목 생성",
-            "description": "집계약 체크타임에서 타임라인을 캘린더 입력용 항목으로 변환합니다.",
+            "description": "집계약 체크타임에서 일정 후보를 캘린더 입력용 항목으로 변환합니다.",
             "required": ["transaction_type", "user_role"],
             "property_names": property_groups["case_core"] + ["contract_date", "move_in_date", "closing_date", "lease_end_date", "calendar_style"],
         },
         {
             "name": "flag_expert_review_points",
             "title": "전문가 검토 포인트 추출",
-            "description": "집계약 체크타임에서 context 태그를 기준으로 전문가 재확인 포인트를 반환합니다.",
+            "description": "집계약 체크타임에서 입력한 문맥 태그를 기준으로 전문가 재확인 포인트를 반환합니다.",
             "required": ["transaction_type", "user_role", "context"],
             "property_names": property_groups["case_core"] + ["context"],
             "properties_override": {
@@ -142,7 +142,7 @@ def build_tool_definitions() -> list[dict[str, Any]]:
         {
             "name": "get_today_tasks",
             "title": "오늘 해야 할 일 후보 생성",
-            "description": "집계약 체크타임에서 기준일과 일정 후보를 조합해 오늘 해야 할 일과 임박 일정 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 기준일을 바탕으로 오늘 해야 할 일과 임박 일정 후보를 반환합니다.",
             "required": ["transaction_type", "user_role"],
             "property_names": property_groups["case_core"] + property_groups["timeline_dates"] + property_groups["task_dates"],
         },

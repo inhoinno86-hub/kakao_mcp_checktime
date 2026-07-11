@@ -42,9 +42,11 @@ def test_tools_list_exposes_all_required_tools() -> None:
     assert set(tool_map["generate_pre_contract_checklist"]["inputSchema"]["properties"]) == {
         "transaction_type",
         "user_role",
-        "contract_date",
-        "move_in_date",
-        "region",
+    }
+    assert set(tool_map["generate_required_documents"]["inputSchema"]["properties"]) == {
+        "transaction_type",
+        "user_role",
+        "stage",
     }
     assert set(tool_map["flag_expert_review_points"]["inputSchema"]["properties"]) == {
         "transaction_type",
