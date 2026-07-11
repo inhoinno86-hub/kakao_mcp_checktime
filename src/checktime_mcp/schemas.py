@@ -19,6 +19,12 @@ ALLOWED_STAGES = {
     "after_move_in",
 }
 
+ALLOWED_DOCUMENT_STAGES = {
+    "contract_day",
+    "before_move_in",
+    "after_contract",
+}
+
 ALLOWED_CALENDAR_STYLES = {
     "talk_calendar_short",
     "talk_calendar_detailed",
@@ -64,7 +70,7 @@ ERROR_MESSAGES = {
     "unsafe_output_detected": "응답 생성 중 안전하지 않은 표현이 감지되어 결과를 반환하지 않았습니다.",
     "insufficient_milestones": "일정 계산에 필요한 기준 날짜가 부족합니다.",
     "timeline_not_ready": "현재 입력만으로는 일정 후보를 만들기 어렵습니다.",
-    "documents_not_ready": "현재 입력한 거래 유형, 역할, 단계 조합으로는 준비서류 후보를 제공하기 어렵습니다.",
+    "documents_not_ready": "현재 입력한 거래 유형, 역할, 단계 조합으로는 준비서류 후보를 제공하기 어렵습니다. 지원 조합: home_purchase/buyer -> contract_day, after_contract; lease_jeonse/tenant -> before_move_in; lease_monthly/tenant -> before_move_in.",
     "case_not_found": "요청한 케이스를 찾을 수 없습니다.",
     "unsupported_stage": "지원하지 않는 단계입니다.",
     "mcp_adapter_error": "MCP adapter 처리 중 오류가 발생했습니다.",

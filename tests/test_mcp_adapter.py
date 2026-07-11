@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from checktime_mcp.mcp_adapter import PROTOCOL_VERSION, handle_jsonrpc_message
+from checktime_mcp.schemas import ALLOWED_DOCUMENT_STAGES
 
 
 def call(method: str, params: dict | None = None, request_id: int = 1) -> dict:
@@ -37,6 +38,8 @@ def test_tools_list_exposes_all_required_tools() -> None:
         assert "inputSchema" in tool
         assert "집계약 체크타임" in tool["description"]
         assert tool["annotations"]["openWorldHint"] is False
+    document_tool = next(tool for tool in tools if tool["name"] == "generate_required_documents")
+    assert document_tool["inputSchema"]["properties"]["stage"]["enum"] == sorted(ALLOWED_DOCUMENT_STAGES)
 
 
 def test_tools_call_wraps_existing_tool_response() -> None:

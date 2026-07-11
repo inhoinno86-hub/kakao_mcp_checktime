@@ -67,6 +67,8 @@ def test_generate_required_documents_returns_error_when_stage_has_no_documents()
     )
     assert response["ok"] is False
     assert response["error"]["code"] == "documents_not_ready"
+    assert "home_purchase/buyer -> contract_day, after_contract" in response["error"]["message"]
+    assert "lease_monthly/tenant -> before_move_in" in response["error"]["message"]
 
 
 def test_generate_required_documents_returns_documents_for_supported_stage() -> None:

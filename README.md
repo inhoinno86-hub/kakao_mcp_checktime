@@ -68,7 +68,11 @@ PYTHONPATH=src python3 -m checktime_mcp.server generate_required_documents --inp
 
 주의:
 
-- `generate_required_documents` 는 지원 단계라도 해당 거래 유형/역할 조합에 문서 seed가 없으면 성공 빈 배열 대신 `documents_not_ready` 오류를 반환한다.
+- `generate_required_documents` 의 현재 정상 응답 범위:
+  - `home_purchase` + `buyer` -> `contract_day`, `after_contract`
+  - `lease_jeonse` + `tenant` -> `before_move_in`
+  - `lease_monthly` + `tenant` -> `before_move_in`
+- 그 외 단계 조합은 성공 빈 배열 대신 `documents_not_ready` 오류를 반환한다.
 
 ## MCP adapter / HTTP server 실행 방법
 

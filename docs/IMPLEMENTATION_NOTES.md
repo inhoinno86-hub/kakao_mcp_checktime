@@ -82,6 +82,10 @@ python3 scripts/smoke_http_server.py
 ```
 
 - 지원 `stage` 값이어도 해당 `transaction_type` / `user_role` 조합에 매칭 문서가 없으면 `documents_not_ready` 오류를 반환한다.
+- 현재 정상 응답 보장 조합:
+  - `home_purchase` + `buyer` -> `contract_day`, `after_contract`
+  - `lease_jeonse` + `tenant` -> `before_move_in`
+  - `lease_monthly` + `tenant` -> `before_move_in`
 
 ### `generate_calendar_items`
 

@@ -15,6 +15,12 @@ from .data_loader import (
 from .guardrails import ToolError
 from .response_policy import error_response, success_response
 
+SUPPORTED_DOCUMENT_STAGES = {
+    ("home_purchase", "buyer"): {"contract_day", "after_contract"},
+    ("lease_jeonse", "tenant"): {"before_move_in"},
+    ("lease_monthly", "tenant"): {"before_move_in"},
+}
+
 
 def handle_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
     tool = TOOL_REGISTRY.get(tool_name)
@@ -74,6 +80,7 @@ def generate_required_documents(payload: dict[str, Any]) -> dict[str, Any]:
         payload,
         required_fields=["transaction_type", "user_role", "stage"],
     )
+    validate_document_support(case)
     documents = [
         item
         for item in load_documents(case["transaction_type"], case["user_role"])
@@ -88,6 +95,12 @@ def generate_required_documents(payload: dict[str, Any]) -> dict[str, Any]:
         unknowns=default_unknowns(documents + expert_points),
         expert_review_points=expert_points,
     )
+
+
+def validate_document_support(case: dict[str, Any]) -> None:
+    supported_stages = SUPPORTED_DOCUMENT_STAGES.get((case["transaction_type"], case["user_role"]), set())
+    if case["stage"] not in supported_stages:
+        raise ToolError("documents_not_ready")
 
 
 def generate_calendar_items(payload: dict[str, Any]) -> dict[str, Any]:

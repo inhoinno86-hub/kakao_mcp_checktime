@@ -7,7 +7,13 @@ from . import __version__
 from .health import SERVICE_NAME
 from .response_policy import error_response
 from .runtime_config import LEGACY_PROTOCOL_VERSION
-from .schemas import ALLOWED_CALENDAR_STYLES, ALLOWED_STAGES, ALLOWED_TRANSACTION_TYPES, ALLOWED_USER_ROLES
+from .schemas import (
+    ALLOWED_CALENDAR_STYLES,
+    ALLOWED_DOCUMENT_STAGES,
+    ALLOWED_STAGES,
+    ALLOWED_TRANSACTION_TYPES,
+    ALLOWED_USER_ROLES,
+)
 from .tools import TOOL_REGISTRY, handle_tool
 
 
@@ -93,8 +99,15 @@ def build_tool_definitions() -> list[dict[str, Any]]:
         {
             "name": "generate_required_documents",
             "title": "단계별 준비서류 생성",
-            "description": "집계약 체크타임에서 거래 유형, 역할, 단계 기준으로 준비서류 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 거래 유형, 역할, 단계 기준으로 준비서류 후보를 반환합니다. 현재 지원 단계는 home_purchase/buyer 의 contract_day, after_contract 와 lease_jeonse·lease_monthly/tenant 의 before_move_in 입니다.",
             "required": ["transaction_type", "user_role", "stage"],
+            "properties_override": {
+                "stage": {
+                    "type": "string",
+                    "enum": sorted(ALLOWED_DOCUMENT_STAGES),
+                    "description": "준비서류 단계 구분. 현재 generate_required_documents 는 contract_day, before_move_in, after_contract 만 지원합니다.",
+                }
+            },
         },
         {
             "name": "generate_calendar_items",
@@ -122,7 +135,7 @@ def build_tool_definitions() -> list[dict[str, Any]]:
             "description": item["description"],
             "inputSchema": {
                 "type": "object",
-                "properties": common_properties,
+                "properties": {**common_properties, **item.get("properties_override", {})},
                 "required": item["required"],
                 "additionalProperties": False,
             },
