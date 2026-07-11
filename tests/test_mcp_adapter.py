@@ -24,6 +24,7 @@ def test_initialize_returns_server_capabilities() -> None:
 def test_tools_list_exposes_all_required_tools() -> None:
     response = call("tools/list")
     tools = response["result"]["tools"]
+    tool_map = {tool["name"]: tool for tool in tools}
     names = {tool["name"] for tool in tools}
     assert names == {
         "generate_pre_contract_checklist",
@@ -38,7 +39,20 @@ def test_tools_list_exposes_all_required_tools() -> None:
         assert "inputSchema" in tool
         assert "집계약 체크타임" in tool["description"]
         assert tool["annotations"]["openWorldHint"] is False
-    document_tool = next(tool for tool in tools if tool["name"] == "generate_required_documents")
+    assert set(tool_map["generate_pre_contract_checklist"]["inputSchema"]["properties"]) == {
+        "transaction_type",
+        "user_role",
+        "contract_date",
+        "move_in_date",
+        "region",
+    }
+    assert set(tool_map["flag_expert_review_points"]["inputSchema"]["properties"]) == {
+        "transaction_type",
+        "user_role",
+        "context",
+    }
+    assert tool_map["flag_expert_review_points"]["inputSchema"]["properties"]["context"]["type"] == "array"
+    document_tool = tool_map["generate_required_documents"]
     assert document_tool["inputSchema"]["properties"]["stage"]["enum"] == sorted(ALLOWED_DOCUMENT_STAGES)
 
 

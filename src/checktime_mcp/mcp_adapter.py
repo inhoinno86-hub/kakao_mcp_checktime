@@ -28,7 +28,7 @@ JSONRPC_INTERNAL_ERROR = -32603
 
 
 def build_tool_definitions() -> list[dict[str, Any]]:
-    common_properties = {
+    all_properties = {
         "transaction_type": {
             "type": "string",
             "enum": sorted(ALLOWED_TRANSACTION_TYPES),
@@ -64,6 +64,12 @@ def build_tool_definitions() -> list[dict[str, Any]]:
             "description": "캘린더 출력 스타일.",
         },
     }
+    property_groups = {
+        "case_core": ["transaction_type", "user_role"],
+        "timeline_dates": ["contract_date", "move_in_date", "closing_date", "lease_end_date"],
+        "contextual": ["deposit_amount_range", "region"],
+        "task_dates": ["current_date"],
+    }
     output_schema = {
         "type": "object",
         "properties": {
@@ -89,18 +95,21 @@ def build_tool_definitions() -> list[dict[str, Any]]:
             "title": "계약 전 체크리스트 생성",
             "description": "집계약 체크타임에서 거래 유형과 역할 기준으로 계약 전 확인 항목 후보를 반환합니다.",
             "required": ["transaction_type", "user_role"],
+            "property_names": property_groups["case_core"] + ["contract_date", "move_in_date", "region"],
         },
         {
             "name": "generate_post_contract_timeline",
             "title": "계약 후 일정 후보 생성",
             "description": "집계약 체크타임에서 기준 날짜를 바탕으로 계약 후 일정 후보를 계산합니다.",
             "required": ["transaction_type", "user_role"],
+            "property_names": property_groups["case_core"] + property_groups["timeline_dates"],
         },
         {
             "name": "generate_required_documents",
             "title": "단계별 준비서류 생성",
             "description": "집계약 체크타임에서 거래 유형, 역할, 단계 기준으로 준비서류 후보를 반환합니다. 현재 지원 단계는 home_purchase/buyer 의 contract_day, after_contract 와 lease_jeonse·lease_monthly/tenant 의 before_move_in 입니다.",
             "required": ["transaction_type", "user_role", "stage"],
+            "property_names": property_groups["case_core"] + ["stage"] + property_groups["timeline_dates"],
             "properties_override": {
                 "stage": {
                     "type": "string",
@@ -114,18 +123,28 @@ def build_tool_definitions() -> list[dict[str, Any]]:
             "title": "캘린더 항목 생성",
             "description": "집계약 체크타임에서 타임라인을 캘린더 입력용 항목으로 변환합니다.",
             "required": ["transaction_type", "user_role"],
+            "property_names": property_groups["case_core"] + ["contract_date", "move_in_date", "closing_date", "lease_end_date", "calendar_style"],
         },
         {
             "name": "flag_expert_review_points",
             "title": "전문가 검토 포인트 추출",
             "description": "집계약 체크타임에서 context 태그를 기준으로 전문가 재확인 포인트를 반환합니다.",
             "required": ["transaction_type", "user_role", "context"],
+            "property_names": property_groups["case_core"] + ["context"],
+            "properties_override": {
+                "context": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "전문가 검토 트리거용 문맥 태그 배열. 예: [\"proxy_contract_possible\"]",
+                }
+            },
         },
         {
             "name": "get_today_tasks",
             "title": "오늘 해야 할 일 후보 생성",
             "description": "집계약 체크타임에서 기준일과 일정 후보를 조합해 오늘 해야 할 일과 임박 일정 후보를 반환합니다.",
             "required": ["transaction_type", "user_role"],
+            "property_names": property_groups["case_core"] + property_groups["timeline_dates"] + property_groups["task_dates"],
         },
     ]
     return [
@@ -135,7 +154,10 @@ def build_tool_definitions() -> list[dict[str, Any]]:
             "description": item["description"],
             "inputSchema": {
                 "type": "object",
-                "properties": {**common_properties, **item.get("properties_override", {})},
+                "properties": {
+                    name: item.get("properties_override", {}).get(name, all_properties[name])
+                    for name in item["property_names"]
+                },
                 "required": item["required"],
                 "additionalProperties": False,
             },
