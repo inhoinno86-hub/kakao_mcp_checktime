@@ -42,11 +42,18 @@ def test_tools_list_exposes_all_required_tools() -> None:
     assert set(tool_map["generate_pre_contract_checklist"]["inputSchema"]["properties"]) == {
         "transaction_type",
         "user_role",
+        "contract_date",
+        "move_in_date",
+        "region",
     }
     assert set(tool_map["generate_required_documents"]["inputSchema"]["properties"]) == {
         "transaction_type",
         "user_role",
         "stage",
+        "contract_date",
+        "move_in_date",
+        "closing_date",
+        "lease_end_date",
     }
     assert set(tool_map["flag_expert_review_points"]["inputSchema"]["properties"]) == {
         "transaction_type",
@@ -56,6 +63,8 @@ def test_tools_list_exposes_all_required_tools() -> None:
     assert tool_map["flag_expert_review_points"]["inputSchema"]["properties"]["context"]["type"] == "array"
     document_tool = tool_map["generate_required_documents"]
     assert document_tool["inputSchema"]["properties"]["stage"]["enum"] == sorted(ALLOWED_DOCUMENT_STAGES)
+    assert "timeline_checklist" in tool_map["generate_pre_contract_checklist"]["description"]
+    assert "action_timeline" in tool_map["generate_post_contract_timeline"]["description"]
 
 
 def test_tools_call_wraps_existing_tool_response() -> None:
