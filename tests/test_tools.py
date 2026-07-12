@@ -78,10 +78,15 @@ def test_generate_required_documents_returns_documents_for_supported_stage() -> 
             "transaction_type": "lease_monthly",
             "user_role": "tenant",
             "stage": "before_move_in",
+            "move_in_date": "2026-07-11",
         },
     )
     assert_common_success_shape(response)
     assert response["data"]["documents"]
+    assert response["data"]["timeline_checklist"][0]["date"] == "2026-07-04"
+    assert response["data"]["timeline_checklist"][0]["timing_label"] == "입주일 7일 전"
+    assert response["data"]["timeline_checklist"][-1]["date"] == "2026-07-10"
+    assert response["data"]["timeline_checklist"][-1]["timing_label"] == "입주일 1일 전"
 
 
 def test_invalid_transaction_type_returns_error() -> None:
@@ -94,6 +99,40 @@ def test_invalid_transaction_type_returns_error() -> None:
     )
     assert response["ok"] is False
     assert response["error"]["code"] == "invalid_transaction_type"
+
+
+def test_generate_pre_contract_checklist_includes_timeline_checklist_when_contract_date_exists() -> None:
+    response = handle_tool(
+        "generate_pre_contract_checklist",
+        {
+            "transaction_type": "lease_jeonse",
+            "user_role": "tenant",
+            "contract_date": "2026-07-20",
+            "move_in_date": "2026-08-18",
+        },
+    )
+    assert_common_success_shape(response)
+    assert response["data"]["timeline_checklist"][0]["date"] == "2026-07-13"
+    assert response["data"]["timeline_checklist"][0]["timing_label"] == "계약일 7일 전"
+    assert response["data"]["timeline_checklist"][0]["checklist_items"]
+
+
+def test_generate_post_contract_timeline_includes_action_timeline() -> None:
+    response = handle_tool(
+        "generate_post_contract_timeline",
+        {
+            "transaction_type": "lease_jeonse",
+            "user_role": "tenant",
+            "contract_date": "2026-07-20",
+            "move_in_date": "2026-08-18",
+        },
+    )
+    assert_common_success_shape(response)
+    action_timeline = response["data"]["action_timeline"]
+    assert action_timeline
+    assert any(item["action_type"] == "timeline_event" for item in action_timeline)
+    assert any(item["action_type"] == "checklist_item" for item in action_timeline)
+    assert any(item["action_type"] == "document_item" for item in action_timeline)
 
 
 def test_sensitive_input_returns_error() -> None:

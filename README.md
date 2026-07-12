@@ -18,6 +18,16 @@ Phase 2D baseline 로컬 검증은 PASS 상태를 유지했고, PlayMCP in KC re
 - 민감정보 차단, disclaimer 강제, 금지 표현 self-check 유지
 - PlayMCP 임시 등록 전 MCP adapter / HTTP endpoint / smoke test / readiness 경로 준비
 
+## MCP 설명
+
+집계약 체크타임은 주택 매매·전세·월세 계약을 준비하는 매수인과 임차인을 위한 MCP 서버다.
+
+지원되는 거래 유형과 일정 입력을 바탕으로 계약 전 확인사항, 계약 후 일정 후보, 오늘 확인할 일, 전문가 재확인 포인트를 구조화된 tool로 제공한다. 날짜가 들어오면 단순 목록만 반환하지 않고 `timeline_checklist` 와 `action_timeline` 형태로 계약일·입주일·잔금일 기준의 due-date 감각이 보이도록 정리한다.
+
+일부 준비서류 안내는 현재 지원되는 거래 유형·역할·단계 조합에서만 제한적으로 제공한다.
+
+법률 판단, 세무 판단, 거래 안전성 판단, 중개, 계약서 작성, 계약서 원문 검토는 수행하지 않으며, 민감한 개인정보나 계약서 원문 없이 날짜와 거래 유형 중심으로 사용하도록 설계했다.
+
 ## 현재 구현 범위
 
 - 로컬 tool runner CLI
@@ -204,6 +214,18 @@ curl -i http://127.0.0.1:8000/mcp \
 - `generate_calendar_items`
 - `flag_expert_review_points`
 - `get_today_tasks`
+
+## 주요 응답 구조
+
+- `generate_pre_contract_checklist`
+  - `items`: 계약 전 확인 항목 원본 목록
+  - `timeline_checklist`: `계약일 7일 전`, `계약일 3일 전`, `계약일 1일 전` 같은 due-date 버킷
+- `generate_post_contract_timeline`
+  - `timeline_items`: 계약 후 기준 일정 이벤트
+  - `action_timeline`: 일정 이벤트 + 체크리스트 + 준비서류를 날짜 순으로 합친 통합 액션 타임라인
+- `generate_required_documents`
+  - `documents`: 단계별 준비서류 원본 목록
+  - `timeline_checklist`: `입주일 7일 전`, `입주일 3일 전`, `입주일 1일 전` 또는 `계약일 당일` 같은 준비 시점 버킷
 
 ## 테스트 실행 방법
 

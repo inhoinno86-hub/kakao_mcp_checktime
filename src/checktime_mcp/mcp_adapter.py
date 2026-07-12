@@ -93,21 +93,21 @@ def build_tool_definitions() -> list[dict[str, Any]]:
         {
             "name": "generate_pre_contract_checklist",
             "title": "계약 전 체크리스트 생성",
-            "description": "집계약 체크타임에서 지원되는 거래 유형과 역할에 맞는 계약 전 확인 항목을 반환합니다.",
+            "description": "집계약 체크타임에서 지원되는 거래 유형과 역할에 맞는 계약 전 확인 항목을 반환합니다. contract_date 가 있으면 항목을 계약일 전까지의 timeline_checklist 형태로도 함께 반환합니다.",
             "required": ["transaction_type", "user_role"],
             "property_names": property_groups["case_core"],
         },
         {
             "name": "generate_post_contract_timeline",
             "title": "계약 후 일정 후보 생성",
-            "description": "집계약 체크타임에서 입력한 기준 날짜를 바탕으로 계약 후 일정 후보를 반환합니다.",
+            "description": "집계약 체크타임에서 입력한 기준 날짜를 바탕으로 계약 후 일정 후보를 반환합니다. milestone 날짜가 충분하면 일정 이벤트와 체크리스트/준비서류 action 을 합친 action_timeline 도 함께 반환합니다.",
             "required": ["transaction_type", "user_role"],
             "property_names": property_groups["case_core"] + property_groups["timeline_dates"],
         },
         {
             "name": "generate_required_documents",
             "title": "단계별 준비서류 생성",
-            "description": "집계약 체크타임에서 일부 지원 조합에 한해 준비서류 후보를 반환합니다. 현재 지원 범위는 home_purchase/buyer 의 contract_day, after_contract 와 lease_jeonse·lease_monthly/tenant 의 before_move_in 입니다.",
+            "description": "집계약 체크타임에서 일부 지원 조합에 한해 준비서류 후보를 반환합니다. milestone 날짜가 있으면 준비서류를 해당 기준일에 맞춘 timeline_checklist 형태로도 함께 반환합니다. 현재 지원 범위는 home_purchase/buyer 의 contract_day, after_contract 와 lease_jeonse·lease_monthly/tenant 의 before_move_in 입니다.",
             "required": ["transaction_type", "user_role", "stage"],
             "property_names": property_groups["case_core"] + ["stage"],
             "properties_override": {
